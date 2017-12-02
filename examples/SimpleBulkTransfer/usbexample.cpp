@@ -7,14 +7,36 @@
 UsbExample::UsbExample(QObject *parent) : QObject(parent) {
   this->setupDevice();
 
-  QByteArray send, recv;
+//  QByteArray send, recv;
+  QByteArray send;
 
-  send.append((char)0xAB);
+  //send.append((char)0xAB);
+  //0a ff 01 00 01
+  send.append((char)0x0a);
+  send.append((char)0xff);
+  send.append((char)0x01);
+  send.append((char)0x00);
+  send.append((char)0x01);
 
   if (this->openDevice()) {
     qDebug("Device open!");
+    qDebug() << "Send Data: " << send.toHex();
     this->write(&send);
+    //qDebug("Read Data");
+    //this->read(&recv);
+  }
+  while (1) {
+    //qDebug("Before Sleep");
+     QByteArray recv;
+    //sleep(1);
     this->read(&recv);
+    //qDebug("Read data: " + recv.toStdString());
+    if(recv.size() != 0 || !recv.isEmpty()) {
+            qDebug() << recv.toHex();
+            //qDebug() << "get data";
+    } else {
+       //qDebug() << "Empty";
+    }
   }
 }
 
@@ -26,18 +48,21 @@ void UsbExample::setupDevice() {
    */
 
   mUsbDev = new QUsbDevice();
-  mUsbDev->setDebug(true);
+  //mUsbDev->setDebug(true);
 
   //
-  mFilter.pid = 0x3748;
-  mFilter.vid = 0x0483;
+  mFilter.vid = 0x248a;
+  mFilter.pid = 0x5320;
 
   //
   mConfig.alternate = 0;
-  mConfig.config = 0;
-  mConfig.interface = 1;
-  mConfig.readEp = 0x81;
-  mConfig.writeEp = 0x02;
+  mConfig.config = 1;
+  mConfig.interface = 0;
+  //mConfig.readEp = 0x05; // 88 IN, 05 OUT
+  //mConfig.writeEp = 0x88;
+
+  mConfig.readEp = 0x88; // 88 IN, 05 OUT
+  mConfig.writeEp = 0x05;
 }
 
 bool UsbExample::openDevice() {
@@ -45,10 +70,14 @@ bool UsbExample::openDevice() {
 
   QtUsb::DeviceStatus ds;
   ds = mUsbManager.openDevice(mUsbDev, mFilter, mConfig);
+  //ds = mUsbManager.openDevice(mUsbDev, mFilter, NULL);
 
   if (ds == QtUsb::deviceOK) {
     // Device is open
+      qDebug("Open success");
     return true;
+  } else {
+      qDebug("Open Failed!!");
   }
   return false;
 }
@@ -59,6 +88,6 @@ bool UsbExample::closeDevice() {
   return false;
 }
 
-void UsbExample::read(QByteArray *buf) { mUsbDev->read(buf, 1); }
+void UsbExample::read(QByteArray *buf) { mUsbDev->read(buf, 100); }
 
 void UsbExample::write(QByteArray *buf) { mUsbDev->write(buf, buf->size()); }

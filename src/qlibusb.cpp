@@ -100,7 +100,7 @@ qint32 QUsbDevice::open() {
   libusb_get_configuration(mDevHandle, &conf);
 
   if (conf != mConfig.config) {
-    if (mDebug) qDebug("Configuration needs to be changed");
+    if (mDebug) qDebug("Configuration needs to be changed, ori is %d, setting is %d",conf, mConfig.config);
     rc = libusb_set_configuration(mDevHandle, mConfig.config);
     if (rc != 0) {
       qWarning("Cannot Set Configuration");
@@ -177,10 +177,10 @@ void QUsbDevice::flush() {
 }
 
 qint32 QUsbDevice::read(QByteArray* buf, quint32 len) {
-  UsbPrintFuncName();
+  //UsbPrintFuncName();
   Q_CHECK_PTR(buf);
   qint32 rc, read_bytes;
-  qint32 read_total;
+  quint32 read_total;
   QElapsedTimer timer;
 
   // check it isn't closed already
@@ -191,8 +191,8 @@ qint32 QUsbDevice::read(QByteArray* buf, quint32 len) {
   read_total = 0;
   read_bytes = 0;
 
-  if (mReadBuffer.isEmpty())
-    if (mDebug) qDebug("Read cache empty");
+  //if (mReadBuffer.isEmpty())
+  //  if (mDebug) qDebug("Read cache empty");
 
   /* Fetch from buffer first */
   if (len <= (quint32)mReadBuffer.size() && !mReadBuffer.isEmpty()) {
@@ -223,9 +223,11 @@ qint32 QUsbDevice::read(QByteArray* buf, quint32 len) {
     if (rc == LIBUSB_ERROR_TIMEOUT) {
       rc = LIBUSB_SUCCESS;
     }
-    if (rc != LIBUSB_SUCCESS) break;
+    if (rc != LIBUSB_SUCCESS) {
+        break;
+    }
   }
-  if (mDebug && timer.elapsed() >= mTimeout) qDebug("USB Timeout!");
+  //if (mDebug && timer.elapsed() >= mTimeout) qDebug("USB Timeout!");
 
   // we resize the buffer.
   mReadBuffer.resize(read_total);
@@ -235,7 +237,10 @@ qint32 QUsbDevice::read(QByteArray* buf, quint32 len) {
   QString datastr, s;
 
   if (mDebug) {
-    for (qint32 i = 0; i < read_total; i++) {
+    for (quint32 i = 0; i < read_total; i++) {
+        //Here
+        //qDebug() << "i = " << i << "size = " << buf->size();
+        //if(i<buf->size())
       datastr.append(s.sprintf("%02X:", (uchar)buf->at(i)));
     }
     datastr.remove(datastr.size() - 1, 1);  // remove last colon
