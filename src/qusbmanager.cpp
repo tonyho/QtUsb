@@ -1,5 +1,7 @@
 #include "qusbmanager.h"
 
+#define emit Q_EMIT
+
 static libusb_hotplug_callback_handle callback_handle;
 static int hotplugCallback(libusb_context *ctx,
                            libusb_device *device,

@@ -7,6 +7,8 @@
 #include <QList>
 #include <QString>
 
+//#define slots Q_SLOTS:
+
 /**
  * @brief
  *
@@ -110,7 +112,8 @@ public:
    */
   static QtUsb::FilterList getAvailableDevices(void);
 
-public slots:
+//public slots:
+public Q_SLOTS:
   /**
    * @brief Open the devices
    *
@@ -186,7 +189,8 @@ public slots:
    */
   void showSettings(void);
 
-protected slots:
+//protected slots:
+protected Q_SLOTS:
   /**
    * @brief Set default values (config)
    *

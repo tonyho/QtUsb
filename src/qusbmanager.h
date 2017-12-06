@@ -40,7 +40,8 @@ public:
    */
   bool isPresent(const QtUsb::DeviceFilter &filter);
 
-signals:
+//signals:
+Q_SIGNALS:
   /**
    * @brief Signals a new device from the given list has been inserted
    *
@@ -54,7 +55,8 @@ signals:
    */
   void deviceRemoved(QtUsb::FilterList filters);
 
-public slots:
+//public slots:
+public Q_SLOTS:
   /**
    * @brief Add a device to the manager's list
    *
@@ -98,7 +100,8 @@ public slots:
    */
   QtUsb::DeviceStatus closeDevice(QUsbDevice *dev);
 
-protected slots:
+//protected slots:
+protected Q_SLOTS:
   /**
    * @brief Checks for new events (insertions/removal) in the given list
    *

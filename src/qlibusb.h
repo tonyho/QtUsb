@@ -36,7 +36,8 @@ public:
    */
   static QtUsb::FilterList getAvailableDevices(void);
 
-public slots:
+//public slots:
+public Q_SLOTS:
   /**
    * @brief See base class
    *
@@ -78,7 +79,8 @@ public slots:
    */
   void setDebug(bool enable);
 
-private slots:
+//private slots:
+private Q_SLOTS:
 
 private:
   /**

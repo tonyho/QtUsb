@@ -9,6 +9,9 @@ UsbExample::UsbExample(QObject *parent) : QObject(parent) {
 
 //  QByteArray send, recv;
   QByteArray send;
+  //QByteArray sendLongData = QByteArray::fromHex("1cff2a0011000102030405060708090a0b0c0d0e0f1011121314ff02030405060708090a0b0c0d0e0f10111213dd");
+  QByteArray sendLongData = QByteArray::fromHex("1cff160011000102030405060708090a0b0c0d0e0f1011121314");
+  unsigned long count = 0;
 
   //send.append((char)0xAB);
   //0a ff 01 00 01
@@ -29,10 +32,16 @@ UsbExample::UsbExample(QObject *parent) : QObject(parent) {
     //qDebug("Before Sleep");
      QByteArray recv;
     //sleep(1);
+     count ++;
+     if(count % 20 == 1){
+         qDebug() << "SendData: count = " << count << " " <<sendLongData.toHex();
+         this->write(&sendLongData);
+     }
+
     this->read(&recv);
     //qDebug("Read data: " + recv.toStdString());
     if(recv.size() != 0 || !recv.isEmpty()) {
-            qDebug() << recv.toHex();
+            qDebug() << "Rec: " << recv.toHex();
             //qDebug() << "get data";
     } else {
        //qDebug() << "Empty";
